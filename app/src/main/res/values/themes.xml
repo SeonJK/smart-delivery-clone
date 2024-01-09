@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.SmartDeliveryClone" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.SmartDeliveryClone.Splash" parent="Theme.SplashScreen" >
+        <item name="windowSplashScreenAnimatedIcon">@drawable/img_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.SmartDeliveryClone</item>
+    </style>
 </resources>
