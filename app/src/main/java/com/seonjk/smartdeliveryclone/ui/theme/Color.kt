@@ -12,6 +12,6 @@ val Pink40 = Color(0xFF7D5260)
 
 val Orange = Color(0xFFFFA000)
 val BackgroundBlack = Color(0xFF202020)
-val OnBackgroundGrey = Color(0xFF404040)
-val OnBackgroundWhite = Color(0xFFFDFDFD)
+val OnBackgroundGrey = Color(0xFF363840)
+val OnBackgroundWhite = Color(0xFFEDEDED)
 val DimBlack = Color(0x04000000)
