@@ -1,8 +1,20 @@
 <resources>
     <string name="app_name">SmartDeliveryClone</string>
+
+    <!-- 권한 팝업 -->
+    <string name="permission_title">반갑습니다!</string>
+    <string name="permission_description">편리한 스마트택배 이용을 위해\n아래의 앱 권한을 허용해 주세요.</string>
+    <string name="permission_positive_text">확인</string>
+    <string name="permission_desc_2nd">배송 상태가 변경될 때\n자동으로 알려드릴게요!\n스마트택배가 알림을 보내도록\n</string>
+    <string name="permission_desc_2nd_accent">허용</string>
+    <string name="permission_desc_2nd_rest">해 주세요!</string>
+
+    <!-- 이용약관 -->
     <string name="service_agreement">이용약관</string>
     <string name="agree_all">전체 동의</string>
     <string name="agree_description">이용약관과 개인정보 수집 및 이용안내에 모두 동의하셔야\n스마트택배를 이용하실 수 있습니다.</string>
     <string name="service_agree">서비스 이용약관 동의(필수)</string>
     <string name="private_info_agree">개인정보 수집 및 이용안내 동의(필수)</string>
+
+
 </resources>

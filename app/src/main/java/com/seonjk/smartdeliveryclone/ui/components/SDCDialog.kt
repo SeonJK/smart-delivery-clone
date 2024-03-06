@@ -2,6 +2,7 @@ package com.seonjk.smartdeliveryclone.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,113 +28,123 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 
 @Composable
 fun SDCDialog(
+    modifier: Modifier,
     title: String = "",
     description: String = "",
     positiveText: String,
     negativeText: AnnotatedString = AnnotatedString(""),
     onClickPositive: () -> Unit,
-    onClickNegative: (Int) -> Unit,
+    onClickNegative: () -> Unit = { },
     onCheckedChange: (Boolean) -> Unit = { },
+    setShowDialog: (Boolean) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = com.seonjk.smartdeliveryclone.ui.theme.DimBlack)
-            .padding(50.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
+    Dialog( onDismissRequest = { setShowDialog(false) }) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(align = Alignment.CenterVertically)
-                .background(
-                    color = SmartDeliveryCloneTheme.colors.onBackground,
-                    shape = RoundedCornerShape(
-                        topStart = 8.dp,
-                        topEnd = 8.dp,
-                        bottomStart = 0.dp,
-                        bottomEnd = 0.dp
+                .fillMaxSize()
+                .padding(40.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(align = Alignment.CenterVertically)
+                    .background(
+                        color = SmartDeliveryCloneTheme.colors.onBackground,
+                        shape = RoundedCornerShape(
+                            topStart = 8.dp,
+                            topEnd = 8.dp,
+                            bottomStart = 0.dp,
+                            bottomEnd = 0.dp
+                        )
                     )
-                )
-                .padding(12.dp, 12.dp, 12.dp, 0.dp),
-            horizontalAlignment = Alignment.Start,
-        ) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                color = SmartDeliveryCloneTheme.colors.titleColor,
-            )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = SmartDeliveryCloneTheme.colors.descriptionColor,
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-        }
-
-        Button(
-            onClick = onClickPositive,
-            shape = RectangleShape,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = SmartDeliveryCloneTheme.colors.primary
-            ),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(
-                text = positiveText,
-                color = Color.White,
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(SmartDeliveryCloneTheme.colors.onBackground)
-                .padding(6.dp, 0.dp, 12.dp, 0.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
+                    .padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 0.dp),
             ) {
-                Checkbox(
+                Text(
                     modifier = Modifier
-                        .size(30.dp),
-                    checked = false,
-                    onCheckedChange = onCheckedChange,
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = Color.LightGray,
-                        uncheckedColor = Color.LightGray,
-                    ),
+                        .fillMaxWidth(),
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = SmartDeliveryCloneTheme.colors.titleColor,
                 )
                 Text(
-                    text = "다시 보지 않기",
-                    color = Color.LightGray,
-                    fontSize = 10.sp,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = SmartDeliveryCloneTheme.colors.descriptionColor,
                 )
+                Spacer(modifier = Modifier.height(20.dp))
             }
 
-            ClickableText(
-                modifier = Modifier,
-                onClick = onClickNegative,
-                text = negativeText,
-                style = TextStyle(
-                    color = Color.LightGray,
-                    fontSize = 10.sp,
-                )
+            Text(
+                modifier = Modifier.fillMaxWidth()
+                    .clickable {
+                        onClickPositive
+                        setShowDialog(false)
+                    }
+                    .background(SmartDeliveryCloneTheme.colors.primary)
+                    .padding(top = 8.dp, bottom = 8.dp),
+                textAlign = TextAlign.Center,
+                text = positiveText,
+                color = Color.White,
+                style = MaterialTheme.typography.titleMedium
             )
+
+            if (negativeText.text != "") {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(SmartDeliveryCloneTheme.colors.onBackground)
+                        .padding(6.dp, 0.dp, 12.dp, 0.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
+                        Checkbox(
+                            modifier = Modifier
+                                .size(30.dp),
+                            checked = false,
+                            onCheckedChange = onCheckedChange,
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = Color.LightGray,
+                                uncheckedColor = Color.LightGray,
+                            ),
+                        )
+                        Text(
+                            text = "다시 보지 않기",
+                            color = Color.LightGray,
+                            fontSize = 10.sp,
+                        )
+                    }
+
+                    ClickableText(
+                        modifier = Modifier,
+                        onClick = {
+                            onClickNegative
+                            setShowDialog(false)
+                        },
+                        text = negativeText,
+                        style = TextStyle(
+                            color = Color.LightGray,
+                            fontSize = 10.sp,
+                        )
+                    )
+                }
+            }
         }
     }
 }
@@ -146,12 +157,13 @@ fun SDCDialog(
 fun SDCDialogPreview() {
     SmartDeliveryCloneTheme {
         SDCDialog(
+            modifier = Modifier,
             title = "타이틀 텍스트",
             description = "설명 텍스트",
             positiveText = "확인",
             negativeText = AnnotatedString("닫기"),
             onClickPositive = { },
-            onClickNegative = { }
+            setShowDialog = { false }
         )
     }
 }
