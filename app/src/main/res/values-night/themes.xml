@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="NightAdjust.Theme.SmartDeliveryClone" parent="android:Theme.Material.NoActionBar" />
+
+    <style name="NightAdjust.Theme.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/background_black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_dummy_splash</item>
+        <item name="postSplashScreenTheme">@style/NightAdjust.Theme.SmartDeliveryClone</item>
+    </style>
+</resources>

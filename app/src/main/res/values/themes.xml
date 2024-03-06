@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Allows us to override night specific attributes in the
+         values-night folder. -->
+    <style name="NightAdjust.Theme.SmartDeliveryClone" parent="android:Theme.Material.Light.NoActionBar" />
 
     <style name="Theme.SmartDeliveryClone" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="Theme.SmartDeliveryClone.Splash" parent="Theme.SplashScreen" >
-        <item name="windowSplashScreenAnimatedIcon">@drawable/img_splash</item>
+    <style name="NightAdjust.Theme.Splash" parent="Theme.SplashScreen" />
+
+    <style name="Theme.SmartDeliveryClone.Splash" parent="NightAdjust.Theme.Splash">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_dummy_splash</item>
         <item name="postSplashScreenTheme">@style/Theme.SmartDeliveryClone</item>
     </style>
 </resources>

@@ -58,14 +58,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 스플래시 화면
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                mainViewModel.loading.value
-            }
-        }
-
         // 이용약관 뷰모델 초기화
         serviceAgreementViewModel = ViewModelProvider(
             owner = this,
@@ -89,6 +81,7 @@ class MainActivity : ComponentActivity() {
                         // 이용약관 동의 및 번호 인증 페이지 이동
 
                     }
+                    HomeScreen()
                 }
             }
         }
