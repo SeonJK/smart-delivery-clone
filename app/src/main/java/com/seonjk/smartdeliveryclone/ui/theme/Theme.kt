@@ -32,7 +32,7 @@ private val LightColorScheme = SmartDeliveryColors(
     background = Color.White,
     onBackground = OnBackgroundWhite,
     titleColor = Color.Black,
-    descriptionColor = Color.LightGray
+    descriptionColor = Color.DarkGray
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
