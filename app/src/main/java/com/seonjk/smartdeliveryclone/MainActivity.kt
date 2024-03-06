@@ -22,6 +22,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
+import com.seonjk.smartdeliveryclone.navigation.RootNavHost
 import com.seonjk.smartdeliveryclone.repository.ServiceAgreementRepositoryImpl
 import com.seonjk.smartdeliveryclone.ui.components.SDCDialog
 import com.seonjk.smartdeliveryclone.ui.components.SDCPermissionDialog
@@ -73,6 +74,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = SmartDeliveryCloneTheme.colors.background
                 ) {
+                    RootNavHost()
+
                     // TODO: dataStore을 받아올 때 라이프사이클 고려해야 함 => LaunchedEffect로 하게 되면 LaunchedEffect가 코루틴이기 때문에 cancel작업을 따로 하지 않아도 됨
                     if (serviceAgreementViewModel.initialServiceAgreement.value?.serviceAgreementAll == true) {
                         // 홈 화면 이동
@@ -81,7 +84,6 @@ class MainActivity : ComponentActivity() {
                         // 이용약관 동의 및 번호 인증 페이지 이동
 
                     }
-                    HomeScreen()
                 }
             }
         }
