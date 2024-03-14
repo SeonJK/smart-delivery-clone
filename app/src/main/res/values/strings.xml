@@ -16,5 +16,21 @@
     <string name="service_agree">서비스 이용약관 동의(필수)</string>
     <string name="private_info_agree">개인정보 수집 및 이용안내 동의(필수)</string>
 
+    <!--  MainGroup Navigation  -->
+    <string name="nav_dashboard">1</string>
+    <string name="nav_list_delivery">2</string>
+    <string name="nav_diary">3</string>
+    <string name="nav_reservation">4</string>
+    <string name="nav_e_money">5</string>
+
+    <!--  대시보드  -->
+
+    <!--  배송목록  -->
+
+    <!--  다이어리  -->
+
+    <!--  택배예약  -->
+
+    <!--  e머니  -->
 
 </resources>
