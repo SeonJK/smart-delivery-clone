@@ -22,6 +22,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.seonjk.smartdeliveryclone.navigation.RootNavHost
 import com.seonjk.smartdeliveryclone.repository.ServiceAgreementRepositoryImpl
 import com.seonjk.smartdeliveryclone.ui.components.SDCDialog
@@ -39,6 +42,8 @@ class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var serviceAgreementViewModel: ServiceAgreementViewModel
+
+    private lateinit var navController: NavHostController
 
     private val permissions: Array<String> = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
 
@@ -59,6 +64,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         // 이용약관 뷰모델 초기화
         serviceAgreementViewModel = ViewModelProvider(
             owner = this,
@@ -67,14 +73,14 @@ class MainActivity : ComponentActivity() {
             )
         )[ServiceAgreementViewModel::class.java]
 
-
         setContent {
             SmartDeliveryCloneTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = SmartDeliveryCloneTheme.colors.background
                 ) {
-                    RootNavHost()
+                    navController = rememberNavController()
+                    RootNavHost(navController)
 
                     // TODO: dataStore을 받아올 때 라이프사이클 고려해야 함 => LaunchedEffect로 하게 되면 LaunchedEffect가 코루틴이기 때문에 cancel작업을 따로 하지 않아도 됨
                     if (serviceAgreementViewModel.initialServiceAgreement.value?.serviceAgreementAll == true) {
