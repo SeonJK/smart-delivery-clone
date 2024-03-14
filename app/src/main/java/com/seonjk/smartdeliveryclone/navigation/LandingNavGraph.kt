@@ -15,10 +15,18 @@ fun NavGraphBuilder.landingNavGraph(
         startDestination = Screen.Landing.ServiceAgreement.route
     ) {
         composable(route = Screen.Landing.ServiceAgreement.route) {
-            ServiceAgreementScreen(navController)
+            ServiceAgreementScreen(navigateToPhoneAuthentication = {
+                    navController.navigate(Screen.Landing.PhoneAuthentication.route)
+                }
+            )
         }
         composable(route = Screen.Landing.PhoneAuthentication.route) {
-            PhoneAuthenticationScreen()
+            PhoneAuthenticationScreen(navigateToMain = {
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Landing.route) { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }

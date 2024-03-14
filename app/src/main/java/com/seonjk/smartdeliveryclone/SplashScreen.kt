@@ -12,7 +12,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(
+    navigateToLanding: () -> Unit,
+    navigateToMain: () -> Unit
+) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = SmartDeliveryCloneTheme.colors.background
@@ -30,6 +33,9 @@ fun SplashScreen() {
 @Composable
 fun SplashScreenPreview() {
     SmartDeliveryCloneTheme {
-        SplashScreen()
+        SplashScreen(
+            navigateToLanding = {},
+            navigateToMain = {}
+        )
     }
 }

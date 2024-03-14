@@ -32,7 +32,9 @@ import com.seonjk.smartdeliveryclone.R
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 
 @Composable
-fun ServiceAgreementScreen() {
+fun ServiceAgreementScreen(
+    navigateToPhoneAuthentication: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -184,6 +186,6 @@ fun Body() {
 @Composable
 fun HeaderPreview() {
     SmartDeliveryCloneTheme {
-        ServiceAgreementScreen()
+        ServiceAgreementScreen {  }
     }
 }
