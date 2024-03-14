@@ -3,7 +3,7 @@ package com.seonjk.smartdeliveryclone.navigation
 // AppRouter.kt
 
 private object Route {
-    const val HOME = "home"
+    const val SPLASH = "splash"
 
     // LANDING Group
     const val LANDING = "landing"
@@ -14,9 +14,10 @@ private object Route {
 }
 
 sealed class Screen(val route: String) {
-    object Home: Screen(Route.HOME)
     object Main: Screen(Route.MAIN)
 }    // LANDING Group
+    object Splash: Screen(Route.SPLASH)
+    // LANDING Group
     object Landing: Screen(Route.LANDING) {
         // 이용약관
         object ServiceAgreement: Screen(Route.SERVICE_AGREEMENT)

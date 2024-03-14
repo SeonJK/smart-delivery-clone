@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 
 @Composable
-fun HomeScreen() {
+fun SplashScreen() {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = SmartDeliveryCloneTheme.colors.background
@@ -21,15 +21,15 @@ fun HomeScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "HomeScreen")
+            Text(text = "SplashScreen")
         }
     }
 }
 
 @Preview
 @Composable
-fun HomePreview() {
+fun SplashScreenPreview() {
     SmartDeliveryCloneTheme {
-        HomeScreen()
+        SplashScreen()
     }
 }
