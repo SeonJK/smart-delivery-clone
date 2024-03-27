@@ -1,18 +1,14 @@
 package com.seonjk.smartdeliveryclone.navigation
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.List
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NamedNavArgument
 import com.seonjk.smartdeliveryclone.R
-import com.seonjk.smartdeliveryclone.ui.icon.DeliveryListIconSelected
-import com.seonjk.smartdeliveryclone.ui.icon.DeliveryListIconUnselected
-import com.seonjk.smartdeliveryclone.ui.icon.DiaryIconSelected
-import com.seonjk.smartdeliveryclone.ui.icon.DiaryIconUnselected
-import com.seonjk.smartdeliveryclone.ui.icon.EMoneyIconSelected
-import com.seonjk.smartdeliveryclone.ui.icon.EMoneyIconUnselected
-import com.seonjk.smartdeliveryclone.ui.icon.HomeIconSelected
-import com.seonjk.smartdeliveryclone.ui.icon.HomeIconUnselected
-import com.seonjk.smartdeliveryclone.ui.icon.ReservationIconSelected
-import com.seonjk.smartdeliveryclone.ui.icon.ReservationIconUnselected
 
 // AppRouter.kt
 
@@ -34,50 +30,52 @@ private object Route {
 }
 
 sealed class Screen(val route: String) {
-    object Splash: Screen(Route.SPLASH)
+    object Splash : Screen(Route.SPLASH)
+
     // LANDING Group
-    object Landing: Screen(Route.LANDING) {
+    object Landing : Screen(Route.LANDING) {
         // 이용약관
-        object ServiceAgreement: Screen(Route.SERVICE_AGREEMENT)
+        object ServiceAgreement : Screen(Route.SERVICE_AGREEMENT)
+
         // 번호인증
-        object PhoneAuthentication: Screen(Route.PHONE_AUTHENTICATION)
+        object PhoneAuthentication : Screen(Route.PHONE_AUTHENTICATION)
     }
+
     // MAIN Group
-    object Main: MainGroupDestination(Route.MAIN) {
+    object Main : MainGroupDestination(Route.MAIN) {
         // 대시보드
-        object DashBoard: MainGroupDestination(
+        object DashBoard : MainGroupDestination(
             route = Route.DASHBOARD,
             title = R.string.nav_dashboard,
-            selectedIcon = HomeIconSelected(),
-            unSelectedIcon = HomeIconUnselected()
+            icon = Icons.Outlined.Home,
         )
+
         // 배송목록
-        object DeliveryList: MainGroupDestination(
+        object DeliveryList : MainGroupDestination(
             route = Route.LIST_DELIVERY,
             title = R.string.nav_list_delivery,
-            selectedIcon = DeliveryListIconSelected(),
-            unSelectedIcon = DeliveryListIconUnselected(),
+            icon = Icons.Outlined.List,
         )
+
         // 다이어리
-        object Diary: MainGroupDestination(
+        object Diary : MainGroupDestination(
             route = Route.DIARY,
             title = R.string.nav_diary,
-            selectedIcon = DiaryIconSelected(),
-            unSelectedIcon = DiaryIconUnselected(),
+            icon = Icons.Outlined.DateRange,
         )
+
         // 택배예약
-        object Reservation: MainGroupDestination(
+        object Reservation : MainGroupDestination(
             route = Route.RESERVATION,
             title = R.string.nav_reservation,
-            selectedIcon = ReservationIconSelected(),
-            unSelectedIcon = ReservationIconUnselected(),
+            icon = Icons.Outlined.Email,
         )
+
         // e머니
-        object EMoney: MainGroupDestination(
+        object EMoney : MainGroupDestination(
             route = Route.E_MONEY,
             title = R.string.nav_e_money,
-            selectedIcon = EMoneyIconSelected(),
-            unSelectedIcon = EMoneyIconUnselected(),
+            icon = Icons.Outlined.ShoppingCart,
         )
     }
 }
@@ -85,7 +83,6 @@ sealed class Screen(val route: String) {
 sealed class MainGroupDestination(
     val route: String,
     val title: Int? = null,
-    val selectedIcon: ImageVector? = null,
-    val unSelectedIcon: ImageVector? = null,
+    val icon: ImageVector? = null,
     val navArgument: List<NamedNavArgument> = emptyList()
 )
