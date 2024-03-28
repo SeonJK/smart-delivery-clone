@@ -1,4 +1,4 @@
-package com.seonjk.smartdeliveryclone.ui.landing
+package com.seonjk.smartdeliveryclone.ui.landing.serviceagreement
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -28,11 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seonjk.smartdeliveryclone.R
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 
 @Composable
 fun ServiceAgreementScreen(
+    viewModel: ServiceAgreementViewModel = viewModel(),
     navigateToPhoneAuthentication: () -> Unit
 ) {
     Column(
