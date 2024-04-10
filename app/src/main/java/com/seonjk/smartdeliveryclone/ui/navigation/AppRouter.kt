@@ -1,4 +1,4 @@
-package com.seonjk.smartdeliveryclone.navigation
+package com.seonjk.smartdeliveryclone.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange

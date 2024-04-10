@@ -1,15 +1,15 @@
-package com.seonjk.smartdeliveryclone.navigation.main
+package com.seonjk.smartdeliveryclone.ui.navigation.main
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.seonjk.smartdeliveryclone.navigation.Screen
 import com.seonjk.smartdeliveryclone.ui.main.DashBoardScreen
 import com.seonjk.smartdeliveryclone.ui.main.DeliveryListScreen
 import com.seonjk.smartdeliveryclone.ui.main.DiaryScreen
 import com.seonjk.smartdeliveryclone.ui.main.EmoneyScreen
 import com.seonjk.smartdeliveryclone.ui.main.ReservationScreen
+import com.seonjk.smartdeliveryclone.ui.navigation.Screen
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController

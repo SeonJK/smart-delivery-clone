@@ -1,8 +1,5 @@
-package com.seonjk.smartdeliveryclone.repository
+package com.seonjk.smartdeliveryclone.data.repository
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.flow.Flow
 
 data class AgreementPreferences(
@@ -12,9 +9,13 @@ data class AgreementPreferences(
 )
 
 
-interface ServiceAgreementRepository {
+interface LandingRepository {
 
-    fun getAgreementPreferences(): Flow<AgreementPreferences>
+    suspend fun getPhoneAuthenticationPreferences(): Flow<Boolean>
+
+    suspend fun setPhoneAuthentication(authenticated: Boolean)
+
+    suspend fun getAgreementPreferences(): Flow<AgreementPreferences>
 
     suspend fun fetchInitialPreferences(): AgreementPreferences
 

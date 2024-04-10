@@ -1,6 +1,5 @@
-package com.seonjk.smartdeliveryclone.navigation
+package com.seonjk.smartdeliveryclone.ui.navigation
 
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -9,16 +8,17 @@ import com.seonjk.smartdeliveryclone.ui.landing.phoneauthentication.PhoneAuthent
 import com.seonjk.smartdeliveryclone.ui.landing.phoneauthentication.PhoneAuthenticationViewModel
 import com.seonjk.smartdeliveryclone.ui.landing.serviceagreement.ServiceAgreementScreen
 import com.seonjk.smartdeliveryclone.ui.landing.serviceagreement.ServiceAgreementViewModel
+import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.landingNavGraph(
     navController: NavController
 ) {
-    navigation (
+    navigation(
         route = Screen.Landing.route,
         startDestination = Screen.Landing.ServiceAgreement.route
     ) {
         composable(route = Screen.Landing.ServiceAgreement.route) {
-            val viewModel = hiltViewModel<ServiceAgreementViewModel>()
+            val viewModel = koinViewModel<ServiceAgreementViewModel>()
             ServiceAgreementScreen(
                 viewModel = viewModel,
                 navigateToPhoneAuthentication = {
@@ -27,7 +27,7 @@ fun NavGraphBuilder.landingNavGraph(
             )
         }
         composable(route = Screen.Landing.PhoneAuthentication.route) {
-            val viewModel = hiltViewModel<PhoneAuthenticationViewModel>()
+            val viewModel = koinViewModel<PhoneAuthenticationViewModel>()
             PhoneAuthenticationScreen(
                 viewModel = viewModel,
                 navigateToMain = {

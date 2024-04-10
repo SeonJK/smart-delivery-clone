@@ -1,4 +1,4 @@
-package com.seonjk.smartdeliveryclone.repository
+package com.seonjk.smartdeliveryclone.data.repository
 
 import android.util.Log
 import androidx.datastore.core.DataStore
@@ -12,19 +12,20 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-class ServiceAgreementRepositoryImpl(
+class LandingRepositoryImpl(
     private val dataStore: DataStore<Preferences>,
-) : ServiceAgreementRepository {
+) : LandingRepository {
 
-    private val TAG: String = "ServiceAgreementRepositoryImpl"
+    private val TAG: String = "LandingRepositoryImpl"
 
-    object PreferenceKeys {
+    object LandingPreferenceKeys {
         val SERVICE_AGREEMENT_ALL = booleanPreferencesKey("service_agreement_all")
         val SERVICE_AGREEMENT = booleanPreferencesKey("service_agreement")
         val PRIVATE_INFO_AGREEMENT = booleanPreferencesKey("private_info_agreement")
+        val PHONE_AUTHENTICATED = booleanPreferencesKey("phone_authenticated")
     }
 
-    val agreementPreferencesFlow: Flow<AgreementPreferences> = dataStore.data
+    private val agreementPreferencesFlow: Flow<AgreementPreferences> = dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 Log.e(TAG, "Error reading preferences.", exception)
@@ -35,33 +36,56 @@ class ServiceAgreementRepositoryImpl(
         }.map { preferences ->
             mapAgreementPreferences(preferences)
         }
-    override fun getAgreementPreferences(): Flow<AgreementPreferences> = agreementPreferencesFlow
+
+    private val phoneAuthenticationFlow: Flow<Boolean> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                Log.e(TAG, "Error reading preferences.", exception)
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map { preferences ->
+            preferences[LandingPreferenceKeys.PHONE_AUTHENTICATED] ?: false
+        }
+
+    override suspend fun getPhoneAuthenticationPreferences(): Flow<Boolean> =
+        phoneAuthenticationFlow
+
+    override suspend fun setPhoneAuthentication(authenticated: Boolean) {
+        dataStore.edit { preference ->
+            preference[LandingPreferenceKeys.PHONE_AUTHENTICATED] = authenticated
+        }
+    }
+
+    override suspend fun getAgreementPreferences(): Flow<AgreementPreferences> =
+        agreementPreferencesFlow
 
     override suspend fun fetchInitialPreferences() =
         mapAgreementPreferences(dataStore.data.first().toPreferences())
 
     override suspend fun setServiceAgreementAll(serviceAgreementAll: Boolean) {
         dataStore.edit { preferences ->
-            preferences[PreferenceKeys.SERVICE_AGREEMENT_ALL] = serviceAgreementAll
+            preferences[LandingPreferenceKeys.SERVICE_AGREEMENT_ALL] = serviceAgreementAll
         }
     }
 
     override suspend fun setServiceAgreement(serviceAgreement: Boolean) {
         dataStore.edit { preferences ->
-            preferences[PreferenceKeys.SERVICE_AGREEMENT] = serviceAgreement
+            preferences[LandingPreferenceKeys.SERVICE_AGREEMENT] = serviceAgreement
         }
     }
 
     override suspend fun setPrivateInfo(privateInfo: Boolean) {
         dataStore.edit { preferences ->
-            preferences[PreferenceKeys.PRIVATE_INFO_AGREEMENT] = privateInfo
+            preferences[LandingPreferenceKeys.PRIVATE_INFO_AGREEMENT] = privateInfo
         }
     }
 
     private fun mapAgreementPreferences(preferences: Preferences): AgreementPreferences {
-        val serviceAgreementAll = preferences[PreferenceKeys.SERVICE_AGREEMENT_ALL] ?: false
-        val serviceAgreement = preferences[PreferenceKeys.SERVICE_AGREEMENT] ?: false
-        val privateInfo = preferences[PreferenceKeys.PRIVATE_INFO_AGREEMENT] ?: false
+        val serviceAgreementAll = preferences[LandingPreferenceKeys.SERVICE_AGREEMENT_ALL] ?: false
+        val serviceAgreement = preferences[LandingPreferenceKeys.SERVICE_AGREEMENT] ?: false
+        val privateInfo = preferences[LandingPreferenceKeys.PRIVATE_INFO_AGREEMENT] ?: false
         return AgreementPreferences(serviceAgreementAll, serviceAgreement, privateInfo)
     }
 }
