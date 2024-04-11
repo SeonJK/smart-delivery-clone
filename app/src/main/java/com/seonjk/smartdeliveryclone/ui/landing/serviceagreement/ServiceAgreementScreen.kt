@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,9 +20,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,41 +35,57 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seonjk.smartdeliveryclone.R
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
+import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiceAgreementScreen(
-    viewModel: ServiceAgreementViewModel = viewModel(),
+    viewModel: ServiceAgreementViewModel = koinViewModel(),
     navigateToPhoneAuthentication: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
+    Scaffold(
+        topBar = { Header() },
     ) {
-        Header()
-        Body()
+        Body(
+            padding = it,
+            viewModel = viewModel)
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Header() {
-    Row(
-        modifier = Modifier
-            .background(SmartDeliveryCloneTheme.colors.background)
-            .statusBarsPadding()
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = stringResource(R.string.service_agreement),
-            color = SmartDeliveryCloneTheme.colors.titleColor,
-            style = MaterialTheme.typography.titleLarge
-        )
-    }
+    TopAppBar(
+        title = {
+            Text(
+                text = stringResource(R.string.service_agreement),
+                color = SmartDeliveryCloneTheme.colors.titleColor,
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
+    )
+//    Row(
+//        modifier = Modifier
+//            .background(SmartDeliveryCloneTheme.colors.background)
+//            .statusBarsPadding()
+//            .fillMaxWidth()
+//            .padding(16.dp),
+//        horizontalArrangement = Arrangement.Start,
+//        verticalAlignment = Alignment.CenterVertically
+//    ) {
+//        Text(
+//            text = stringResource(R.string.service_agreement),
+//            color = SmartDeliveryCloneTheme.colors.titleColor,
+//            style = MaterialTheme.typography.titleLarge
+//        )
+//    }
 }
 
 @Composable
-fun Body() {
+fun Body(
+    padding: PaddingValues,
+    viewModel: ServiceAgreementViewModel) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -77,15 +97,18 @@ fun Body() {
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         Row (
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(SmartDeliveryCloneTheme.colors.onBackground)
-                .clickable { /* 전체동의 클릭 처리 */ }
+                .clickable { viewModel.setServiceAgreementAll(!viewModel.serviceAgreementAll.value)}
                 .padding(16.dp),
         ) {
             Icon(
                 modifier = Modifier.toggleable(
                     value = false,
-                    onValueChange = { value -> /* 전체 동의 처리 */ },
+                    onValueChange = { value -> /* 전체 동의 처리 */
+                        viewModel.setServiceAgreementAll(value)
+                    },
                 ),
                 imageVector = Icons.Rounded.CheckCircle,
                 contentDescription = stringResource(R.string.agree_all),
@@ -114,7 +137,9 @@ fun Body() {
             color = SmartDeliveryCloneTheme.colors.titleColor
         )
 
-        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)) {
             Icon(
                 modifier = Modifier.toggleable(
                     value = false,
@@ -146,11 +171,15 @@ fun Body() {
             color = SmartDeliveryCloneTheme.colors.titleColor
         )
 
-        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)) {
             Icon(
                 modifier = Modifier.toggleable(
                     value = false,
-                    onValueChange = { value -> /* 개인정보 이용약관 동의 처리 */ },
+                    onValueChange = { value ->
+                        viewModel.setServiceAgreementAll(value)
+                    },
                 ),
                 imageVector = Icons.Rounded.CheckCircle,
                 contentDescription = stringResource(R.string.private_info_agree),

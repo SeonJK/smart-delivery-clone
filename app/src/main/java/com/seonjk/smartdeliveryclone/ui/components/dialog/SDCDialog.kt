@@ -1,4 +1,4 @@
-package com.seonjk.smartdeliveryclone.ui.components
+package com.seonjk.smartdeliveryclone.ui.components.dialog
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
@@ -25,10 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,14 +39,14 @@ fun SDCDialog(
     description: String = "",
     positiveText: String,
     negativeText: AnnotatedString = AnnotatedString(""),
+    onDismissRequest: () -> Unit,
     onClickPositive: () -> Unit,
     onClickNegative: () -> Unit = { },
-    onCheckedChange: (Boolean) -> Unit = { },
-    setShowDialog: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit = { }
 ) {
-    Dialog( onDismissRequest = { setShowDialog(false) }) {
+    Dialog(onDismissRequest = onDismissRequest) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(40.dp),
             verticalArrangement = Arrangement.Center
@@ -91,7 +87,7 @@ fun SDCDialog(
                 modifier = Modifier.fillMaxWidth()
                     .clickable {
                         onClickPositive
-                        setShowDialog(false)
+                        onDismissRequest
                     }
                     .background(SmartDeliveryCloneTheme.colors.primary)
                     .padding(top = 8.dp, bottom = 8.dp),
@@ -135,7 +131,7 @@ fun SDCDialog(
                         modifier = Modifier,
                         onClick = {
                             onClickNegative
-                            setShowDialog(false)
+                            onDismissRequest
                         },
                         text = negativeText,
                         style = TextStyle(
@@ -163,7 +159,7 @@ fun SDCDialogPreview() {
             positiveText = "확인",
             negativeText = AnnotatedString("닫기"),
             onClickPositive = { },
-            setShowDialog = { false }
+            onDismissRequest = { }
         )
     }
 }

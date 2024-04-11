@@ -1,11 +1,12 @@
 package com.seonjk.smartdeliveryclone.ui.landing.serviceagreement
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetPrivateInfoUseCase
 import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetServiceAgreementAllUseCase
 import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetServiceAgreementUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ServiceAgreementViewModel(
@@ -14,28 +15,28 @@ class ServiceAgreementViewModel(
     private val setPrivateInfoUseCase: SetPrivateInfoUseCase
 ) : ViewModel() {
 
-    private var _serviceAgreementAll = MutableLiveData<Boolean>()
-    val serviceAgreementAll = _serviceAgreementAll
+    private var _serviceAgreementAll = MutableStateFlow(false)
+    val serviceAgreementAll = _serviceAgreementAll.asStateFlow()
 
-    private var _serviceAgreement = MutableLiveData<Boolean>()
-    val serviceAgreement = _serviceAgreement
+    private var _serviceAgreement = MutableStateFlow(false)
+    val serviceAgreement = _serviceAgreement.asStateFlow()
 
-    private var _privateInfo = MutableLiveData<Boolean>()
-    val privateInfo = _privateInfo
+    private var _privateInfo = MutableStateFlow(false)
+    val privateInfo = _privateInfo.asStateFlow()
 
     fun setServiceAgreementAll(value: Boolean) = viewModelScope.launch {
-        _serviceAgreementAll.postValue(value)
-        _serviceAgreement.postValue(value)
-        _privateInfo.postValue(value)
+        _serviceAgreementAll.emit(value)
+        _serviceAgreement.emit(value)
+        _privateInfo.emit(value)
         setServiceAgreementAllUseCase(value)
         setServiceAgreementUseCase(value)
         setPrivateInfoUseCase(value)
     }
 
     fun setServiceAgreement(value: Boolean) = viewModelScope.launch {
-        _serviceAgreement.postValue(value)
-        if (privateInfo.value == true && value) {
-            _serviceAgreementAll.postValue(value)
+        _serviceAgreement.emit(value)
+        if (privateInfo.value && value) {
+            _serviceAgreementAll.emit(value)
             setServiceAgreementAllUseCase(value)
         } else {
             setServiceAgreementUseCase(value)
@@ -43,9 +44,9 @@ class ServiceAgreementViewModel(
     }
 
     fun setPrivateInfo(value: Boolean) = viewModelScope.launch {
-        _privateInfo.postValue(value)
-        if (serviceAgreement.value == true && value) {
-            _serviceAgreementAll.postValue(value)
+        _privateInfo.emit(value)
+        if (serviceAgreement.value && value) {
+            _serviceAgreementAll.emit(value)
             setServiceAgreementAllUseCase(value)
         } else {
             setPrivateInfoUseCase(value)

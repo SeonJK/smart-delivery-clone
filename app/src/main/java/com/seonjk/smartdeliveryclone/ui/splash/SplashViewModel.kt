@@ -10,6 +10,9 @@ import com.seonjk.smartdeliveryclone.domain.usecase.landing.GetPhoneAuthenticati
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -18,18 +21,20 @@ class SplashViewModel(
     private val getPhoneAuthenticationUseCase: GetPhoneAuthenticationUseCase
 ) : ViewModel() {
 
-    private var _agreedService = MutableLiveData<Boolean>()
-    val agreedService: LiveData<Boolean> = _agreedService
+    private var _agreedService = MutableStateFlow(false)
+    val agreedService = _agreedService.asStateFlow()
 
     private var _phoneAuthenticated = MutableStateFlow(false)
-    val phoneAuthenticated: LiveData<Boolean> = _phoneAuthenticated.asLiveData()
+    val phoneAuthenticated = _phoneAuthenticated.asStateFlow()
 
     fun fetchAgreementAll(): Job = viewModelScope.launch {
-        _agreedService.postValue(fetchInitialServiceAgreementUseCase().serviceAgreementAll)
+        _agreedService.emit(fetchInitialServiceAgreementUseCase().serviceAgreementAll)
     }
 
     fun fetchPhoneAuthenticated(): Job = viewModelScope.launch {
-        val authenticated = getPhoneAuthenticationUseCase()
+        getPhoneAuthenticationUseCase().collectLatest {
+            _phoneAuthenticated.emit(it)
+        }
     }
 
 

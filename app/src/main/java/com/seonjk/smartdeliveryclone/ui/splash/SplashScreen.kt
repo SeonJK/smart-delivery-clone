@@ -7,21 +7,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,7 +34,9 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.seonjk.smartdeliveryclone.R
-import com.seonjk.smartdeliveryclone.ui.components.SDCPermissionDialog
+import com.seonjk.smartdeliveryclone.ui.components.dialog.DialogType
+import com.seonjk.smartdeliveryclone.ui.components.dialog.SDCDialog
+import com.seonjk.smartdeliveryclone.ui.components.dialog.SDCPermissionDialog
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
@@ -46,14 +52,42 @@ fun SplashScreen(
     val permissionState = rememberPermissionState(
         permission = android.Manifest.permission.POST_NOTIFICATIONS
     )
-    val isRational = remember { mutableStateOf(false) }
-    val context = LocalContext.current
+
+    var dialogType by remember {
+        mutableStateOf<DialogType?>(value = null)
+    }
+    dialogType?.let { type ->
+        when (type) {
+            DialogType.PERMISSION_FIRST -> {
+                SDCPermissionDialog(onClickPositive = { }) {
+                    dialogType = DialogType.PERMISSION_SECOND
+                }
+            }
+            DialogType.PERMISSION_SECOND -> {
+                SDCDialog(
+                    modifier = Modifier,
+                    positiveText = "닫기",
+                    onDismissRequest = { dialogType = null },
+                    onClickPositive = goAlarmSetting
+                )
+            }
+            DialogType.PERMISSION_RATIONALE -> {
+                SDCDialog(
+                    modifier = Modifier,
+                    positiveText = "닫기",
+                    onDismissRequest = { dialogType = null },
+                    onClickPositive = { dialogType = null }
+                )
+            }
+        }
+    }
 
     viewModel.fetchPhoneAuthenticated()
     viewModel.fetchAgreementAll()
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(SmartDeliveryCloneTheme.colors.background),
         contentAlignment = Alignment.Center,
     ) {
@@ -79,7 +113,8 @@ fun SplashScreen(
             }
 
             Image(
-                modifier = Modifier.size(300.dp)
+                modifier = Modifier
+                    .size(300.dp)
                     .clip(CircleShape),
                 painter = painterResource(R.drawable.splash_image),
                 contentDescription = "splashImage",
@@ -90,17 +125,17 @@ fun SplashScreen(
 
     }
 
-    LaunchedEffect(viewModel) {
+    LaunchedEffect(permissionState) {
         delay(2000L)
 
         // TODO: 퍼미션 체크
         if (!permissionState.status.isGranted) {
-            if (permissionState.status.shouldShowRationale) {
+            dialogType = if (permissionState.status.shouldShowRationale) {
                 // TODO: 다시 재촉하는 다이얼로그
-                isRational.value = true
+                DialogType.PERMISSION_RATIONALE
             } else {
                 // TODO: 최초 다이얼로그
-                SDCPermissionDialog(goAlarmSetting)
+                DialogType.PERMISSION_FIRST
             }
         }
 
@@ -109,12 +144,11 @@ fun SplashScreen(
             && viewModel.phoneAuthenticated.value == true
         ) {
             // 홈 화면 이동
-
+            kotlin.run { navigateToMain }
         } else {
             // 이용약관 동의 및 번호 인증 페이지 이동
-
+            kotlin.run { navigateToLanding }
         }
-
     }
 }
 

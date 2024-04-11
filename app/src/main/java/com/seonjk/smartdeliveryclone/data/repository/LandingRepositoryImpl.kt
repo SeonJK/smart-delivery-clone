@@ -8,6 +8,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
@@ -46,11 +48,12 @@ class LandingRepositoryImpl(
                 throw exception
             }
         }.map { preferences ->
-            preferences[LandingPreferenceKeys.PHONE_AUTHENTICATED] ?: false
+            val reuslt =preferences[LandingPreferenceKeys.PHONE_AUTHENTICATED] ?: false
+            reuslt
         }
 
     override suspend fun getPhoneAuthenticationPreferences(): Flow<Boolean> =
-        phoneAuthenticationFlow
+       phoneAuthenticationFlow
 
     override suspend fun setPhoneAuthentication(authenticated: Boolean) {
         dataStore.edit { preference ->
