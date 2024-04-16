@@ -86,8 +86,8 @@ fun SDCDialog(
             Text(
                 modifier = Modifier.fillMaxWidth()
                     .clickable {
-                        onClickPositive
-                        onDismissRequest
+                        onClickPositive()
+                        onDismissRequest()
                     }
                     .background(SmartDeliveryCloneTheme.colors.primary)
                     .padding(top = 8.dp, bottom = 8.dp),
@@ -130,8 +130,8 @@ fun SDCDialog(
                     ClickableText(
                         modifier = Modifier,
                         onClick = {
-                            onClickNegative
-                            onDismissRequest
+                            onClickNegative()
+                            onDismissRequest()
                         },
                         text = negativeText,
                         style = TextStyle(
