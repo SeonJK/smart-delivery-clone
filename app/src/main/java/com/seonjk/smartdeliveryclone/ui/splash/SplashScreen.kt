@@ -7,11 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -63,6 +60,7 @@ fun SplashScreen(
                     dialogType = DialogType.PERMISSION_SECOND
                 }
             }
+
             DialogType.PERMISSION_SECOND -> {
                 SDCDialog(
                     modifier = Modifier,
@@ -71,6 +69,7 @@ fun SplashScreen(
                     onClickPositive = goAlarmSetting
                 )
             }
+
             DialogType.PERMISSION_RATIONALE -> {
                 SDCDialog(
                     modifier = Modifier,
@@ -81,9 +80,6 @@ fun SplashScreen(
             }
         }
     }
-
-    viewModel.fetchPhoneAuthenticated()
-    viewModel.fetchAgreementAll()
 
     Box(
         modifier = Modifier
