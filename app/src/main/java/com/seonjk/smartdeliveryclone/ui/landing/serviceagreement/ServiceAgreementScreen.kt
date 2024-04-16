@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.selection.toggleable
@@ -25,15 +23,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seonjk.smartdeliveryclone.R
+import com.seonjk.smartdeliveryclone.ui.components.common.Header
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -44,47 +41,24 @@ fun ServiceAgreementScreen(
     navigateToPhoneAuthentication: () -> Unit
 ) {
     Scaffold(
-        topBar = { Header() },
+        topBar = {
+            Header(
+                title = stringResource(R.string.service_agreement)
+            )
+        },
     ) {
-        Body(
+        ServiceAgreementContents(
             padding = it,
-            viewModel = viewModel)
+            viewModel = viewModel
+        )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Header() {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.service_agreement),
-                color = SmartDeliveryCloneTheme.colors.titleColor,
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-    )
-//    Row(
-//        modifier = Modifier
-//            .background(SmartDeliveryCloneTheme.colors.background)
-//            .statusBarsPadding()
-//            .fillMaxWidth()
-//            .padding(16.dp),
-//        horizontalArrangement = Arrangement.Start,
-//        verticalAlignment = Alignment.CenterVertically
-//    ) {
-//        Text(
-//            text = stringResource(R.string.service_agreement),
-//            color = SmartDeliveryCloneTheme.colors.titleColor,
-//            style = MaterialTheme.typography.titleLarge
-//        )
-//    }
-}
-
-@Composable
-fun Body(
+fun ServiceAgreementContents(
     padding: PaddingValues,
-    viewModel: ServiceAgreementViewModel) {
+    viewModel: ServiceAgreementViewModel
+) {
 
     Column(
         modifier = Modifier
@@ -96,11 +70,11 @@ fun Body(
         horizontalAlignment = Alignment.Start
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(SmartDeliveryCloneTheme.colors.onBackground)
-                .clickable { viewModel.setServiceAgreementAll(!viewModel.serviceAgreementAll.value)}
+                .clickable { viewModel.setServiceAgreementAll(!viewModel.serviceAgreementAll.value) }
                 .padding(16.dp),
         ) {
             Icon(
@@ -137,13 +111,17 @@ fun Body(
             color = SmartDeliveryCloneTheme.colors.titleColor
         )
 
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp)
+        ) {
             Icon(
                 modifier = Modifier.toggleable(
                     value = false,
-                    onValueChange = { value -> /* 서비스 이용약관 동의 처리 */ },
+                    onValueChange = { value -> /* 서비스 이용약관 동의 처리 */
+                        viewModel.setServiceAgreement(value)
+                    },
                 ),
                 imageVector = Icons.Rounded.CheckCircle,
                 contentDescription = stringResource(R.string.service_agree),
@@ -171,9 +149,11 @@ fun Body(
             color = SmartDeliveryCloneTheme.colors.titleColor
         )
 
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp)
+        ) {
             Icon(
                 modifier = Modifier.toggleable(
                     value = false,
@@ -210,13 +190,17 @@ fun Body(
 }
 
 @Preview(name = "service_agreement", showBackground = true)
-@Preview(name = "service_agreement_dark",
+@Preview(
+    name = "service_agreement_dark",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true, backgroundColor = 0xFF2C2C2C
 )
 @Composable
 fun HeaderPreview() {
     SmartDeliveryCloneTheme {
-        ServiceAgreementScreen {  }
+        ServiceAgreementScreen(
+            viewModel = koinViewModel<ServiceAgreementViewModel>(),
+            navigateToPhoneAuthentication = {}
+        )
     }
 }
