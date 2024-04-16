@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.seonjk.smartdeliveryclone.R
 import com.seonjk.smartdeliveryclone.ui.components.common.Header
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
+import kotlinx.coroutines.coroutineScope
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +50,8 @@ fun ServiceAgreementScreen(
     ) {
         ServiceAgreementContents(
             padding = it,
-            viewModel = viewModel
+            viewModel = viewModel,
+            navigateToPhoneAuthentication = navigateToPhoneAuthentication
         )
     }
 }
@@ -57,7 +59,8 @@ fun ServiceAgreementScreen(
 @Composable
 fun ServiceAgreementContents(
     padding: PaddingValues,
-    viewModel: ServiceAgreementViewModel
+    viewModel: ServiceAgreementViewModel,
+    navigateToPhoneAuthentication: () -> Unit
 ) {
 
     Column(
@@ -82,6 +85,8 @@ fun ServiceAgreementContents(
                     value = false,
                     onValueChange = { value -> /* 전체 동의 처리 */
                         viewModel.setServiceAgreementAll(value)
+                        // TODO: 프리퍼런스에 저장 완료되면 폰 인증으로 가도록 구현 필요. join? await?
+                        navigateToPhoneAuthentication()
                     },
                 ),
                 imageVector = Icons.Rounded.CheckCircle,
