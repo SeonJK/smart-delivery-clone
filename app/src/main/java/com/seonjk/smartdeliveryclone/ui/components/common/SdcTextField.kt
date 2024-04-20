@@ -1,6 +1,8 @@
 package com.seonjk.smartdeliveryclone.ui.components.common
 
+import androidx.annotation.ColorRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -31,7 +33,10 @@ fun SdcTextField(
         colors = TextFieldDefaults.textFieldColors(
             textColor = SmartDeliveryCloneTheme.colors.primary,
             focusedIndicatorColor = SmartDeliveryCloneTheme.colors.primary,
+            unfocusedIndicatorColor = SmartDeliveryCloneTheme.colors.primary,
+            cursorColor = SmartDeliveryCloneTheme.colors.primary,
             placeholderColor = SmartDeliveryCloneTheme.colors.descriptionColor,
+            containerColor = Color.Transparent
         ),
         maxLines = maxLines
     )
