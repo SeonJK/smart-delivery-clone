@@ -30,7 +30,11 @@ fun RootNavHost(
                     }
                 },
                 navigateToLanding = {
-                    navController.navigate(route = Screen.Landing.route) {
+                    navController.navigate(
+                        route = if (viewModel.agreedService.value && !viewModel.phoneAuthenticated.value)
+                                    Screen.Landing.PhoneAuthentication.route
+                                else Screen.Landing.route
+                    ) {
                         popUpTo(Screen.Splash.route) { inclusive = false }
                     }
                 },

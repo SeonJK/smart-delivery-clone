@@ -24,15 +24,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seonjk.smartdeliveryclone.R
+import com.seonjk.smartdeliveryclone.data.repository.LandingRepository
+import com.seonjk.smartdeliveryclone.data.repository.LandingRepositoryImpl
+import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetServiceAgreementAllUseCase
 import com.seonjk.smartdeliveryclone.ui.components.common.Header
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,6 +52,7 @@ fun ServiceAgreementScreen(
     navigateToPhoneAuthentication: () -> Unit
 ) {
     Scaffold(
+        containerColor = SmartDeliveryCloneTheme.colors.background,
         topBar = {
             Header(
                 title = stringResource(R.string.service_agreement)
@@ -63,11 +74,16 @@ fun ServiceAgreementContents(
     navigateToPhoneAuthentication: () -> Unit
 ) {
 
+    var serviceAgreementAll by remember { mutableStateOf(viewModel.serviceAgreementAll.value) }
+    var serviceAgreement by remember { mutableStateOf(viewModel.serviceAgreement.value) }
+    var privateInfo by remember { mutableStateOf(viewModel.privateInfo.value) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .background(SmartDeliveryCloneTheme.colors.background)
+            .padding(paddingValues = padding)
             .padding(16.dp, 0.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
@@ -82,8 +98,11 @@ fun ServiceAgreementContents(
         ) {
             Icon(
                 modifier = Modifier.toggleable(
-                    value = false,
+                    value = serviceAgreementAll,
                     onValueChange = { value -> /* 전체 동의 처리 */
+                        serviceAgreementAll = value
+                        serviceAgreement = value
+                        privateInfo = value
                         viewModel.setServiceAgreementAll(value)
                         // TODO: 프리퍼런스에 저장 완료되면 폰 인증으로 가도록 구현 필요. join? await?
                         navigateToPhoneAuthentication()
@@ -91,7 +110,8 @@ fun ServiceAgreementContents(
                 ),
                 imageVector = Icons.Rounded.CheckCircle,
                 contentDescription = stringResource(R.string.agree_all),
-                tint = SmartDeliveryCloneTheme.colors.descriptionColor
+                tint = if (serviceAgreementAll) SmartDeliveryCloneTheme.colors.primary
+                        else SmartDeliveryCloneTheme.colors.descriptionColor
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
@@ -123,14 +143,20 @@ fun ServiceAgreementContents(
         ) {
             Icon(
                 modifier = Modifier.toggleable(
-                    value = false,
+                    value = serviceAgreement,
                     onValueChange = { value -> /* 서비스 이용약관 동의 처리 */
+                        serviceAgreement = value
+                        if (serviceAgreement && privateInfo) {
+                            serviceAgreementAll = true
+                            navigateToPhoneAuthentication()
+                        }
                         viewModel.setServiceAgreement(value)
                     },
                 ),
                 imageVector = Icons.Rounded.CheckCircle,
                 contentDescription = stringResource(R.string.service_agree),
-                tint = SmartDeliveryCloneTheme.colors.descriptionColor
+                tint = if (serviceAgreement) SmartDeliveryCloneTheme.colors.primary
+                        else SmartDeliveryCloneTheme.colors.descriptionColor
             )
             Spacer(modifier = Modifier.width(16.dp))
             Row(modifier = Modifier.weight(2f)) {
@@ -161,14 +187,20 @@ fun ServiceAgreementContents(
         ) {
             Icon(
                 modifier = Modifier.toggleable(
-                    value = false,
+                    value = privateInfo,
                     onValueChange = { value ->
+                        privateInfo = value
+                        if (serviceAgreement && privateInfo) {
+                            serviceAgreementAll = true
+                            navigateToPhoneAuthentication()
+                        }
                         viewModel.setServiceAgreementAll(value)
                     },
                 ),
                 imageVector = Icons.Rounded.CheckCircle,
                 contentDescription = stringResource(R.string.private_info_agree),
-                tint = SmartDeliveryCloneTheme.colors.descriptionColor
+                tint = if (privateInfo) SmartDeliveryCloneTheme.colors.primary
+                        else SmartDeliveryCloneTheme.colors.descriptionColor
             )
             Spacer(modifier = Modifier.width(16.dp))
             Row(modifier = Modifier.weight(2f)) {
@@ -201,7 +233,7 @@ fun ServiceAgreementContents(
     showBackground = true, backgroundColor = 0xFF2C2C2C
 )
 @Composable
-fun HeaderPreview() {
+fun ServiceAgreementPreview() {
     SmartDeliveryCloneTheme {
         ServiceAgreementScreen(
             viewModel = koinViewModel<ServiceAgreementViewModel>(),

@@ -1,5 +1,6 @@
 package com.seonjk.smartdeliveryclone.ui.splash
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -136,13 +137,10 @@ fun SplashScreen(
         }
 
         // TODO: dataStore을 받아올 때 라이프사이클 고려해야 함 => LaunchedEffect로 하게 되면 LaunchedEffect가 코루틴이기 때문에 cancel작업을 따로 하지 않아도 됨
-        if (viewModel.agreedService.value == true
-            && viewModel.phoneAuthenticated.value == true
-        ) {
+        if (viewModel.agreedService.value && viewModel.phoneAuthenticated.value) {
             // 홈 화면 이동
             kotlin.run { navigateToMain }
         } else {
-            // 이용약관 동의 및 번호 인증 페이지 이동
             kotlin.run { navigateToLanding }
         }
     }

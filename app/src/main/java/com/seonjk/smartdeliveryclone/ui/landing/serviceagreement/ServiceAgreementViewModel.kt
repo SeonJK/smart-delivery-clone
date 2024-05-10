@@ -15,6 +15,10 @@ class ServiceAgreementViewModel(
     private val setPrivateInfoUseCase: SetPrivateInfoUseCase
 ) : ViewModel() {
 
+    init {
+
+    }
+
     private var _serviceAgreementAll = MutableStateFlow(false)
     val serviceAgreementAll = _serviceAgreementAll.asStateFlow()
 

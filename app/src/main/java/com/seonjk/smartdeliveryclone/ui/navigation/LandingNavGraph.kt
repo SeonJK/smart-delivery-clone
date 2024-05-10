@@ -22,7 +22,9 @@ fun NavGraphBuilder.landingNavGraph(
             ServiceAgreementScreen(
                 viewModel = viewModel,
                 navigateToPhoneAuthentication = {
-                    navController.navigate(Screen.Landing.PhoneAuthentication.route)
+                    navController.navigate(Screen.Landing.PhoneAuthentication.route) {
+                        popUpTo(Screen.Landing.route) { inclusive = true }
+                    }
                 }
             )
         }
