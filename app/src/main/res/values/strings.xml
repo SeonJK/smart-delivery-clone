@@ -2,7 +2,7 @@
     <string name="app_name">SmartDeliveryClone</string>
 
     <!--  Common  -->
-    <string name="confirm">확인</string>
+    <string name="confirm">입력 완료</string>
 
     <!-- 권한 팝업 -->
     <string name="permission_title">반갑습니다!</string>
