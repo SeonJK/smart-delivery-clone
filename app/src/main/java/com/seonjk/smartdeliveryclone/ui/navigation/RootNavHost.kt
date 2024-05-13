@@ -26,16 +26,17 @@ fun RootNavHost(
                 viewModel = viewModel,
                 navigateToMain = {
                     navController.navigate(route = Screen.Main.route) {
-                        popUpTo(Screen.Splash.route) { inclusive = false }
+                        popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 },
                 navigateToLanding = {
                     navController.navigate(
-                        route = if (viewModel.agreedService.value && !viewModel.phoneAuthenticated.value)
-                                    Screen.Landing.PhoneAuthentication.route
-                                else Screen.Landing.route
+                        route =
+                        if (viewModel.agreedService.value && !viewModel.phoneAuthenticated.value) {
+                            Screen.Landing.PhoneAuthentication.route
+                        } else Screen.Landing.route
                     ) {
-                        popUpTo(Screen.Splash.route) { inclusive = false }
+                        popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 },
                 goAlarmSetting = goAlarmSetting
