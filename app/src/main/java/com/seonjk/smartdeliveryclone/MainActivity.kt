@@ -1,5 +1,8 @@
 package com.seonjk.smartdeliveryclone
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +17,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.seonjk.smartdeliveryclone.ui.navigation.RootNavHost
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
+
+internal fun Context.findActivity(): Activity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    throw IllegalStateException("no Activity")
+}
 
 class MainActivity : ComponentActivity() {
 
