@@ -18,15 +18,6 @@ import androidx.navigation.compose.rememberNavController
 import com.seonjk.smartdeliveryclone.ui.navigation.RootNavHost
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 
-internal fun Context.findActivity(): Activity {
-    var context = this
-    while (context is ContextWrapper) {
-        if (context is Activity) return context
-        context = context.baseContext
-    }
-    throw IllegalStateException("no Activity")
-}
-
 class MainActivity : ComponentActivity() {
 
     private lateinit var navController: NavHostController
