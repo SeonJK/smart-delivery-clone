@@ -1,6 +1,5 @@
 package com.seonjk.smartdeliveryclone.ui.splash
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -88,6 +87,7 @@ fun SplashScreen(
             .background(SmartDeliveryCloneTheme.colors.background),
         contentAlignment = Alignment.Center,
     ) {
+        // TODO: Remove this --------------------------------
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -108,6 +108,7 @@ fun SplashScreen(
                     color = Color.White
                 )
             }
+            // TODO: ----------------------------------------------
 
             Image(
                 modifier = Modifier
@@ -125,22 +126,24 @@ fun SplashScreen(
     LaunchedEffect(permissionState) {
         delay(2000L)
 
-        // TODO: 퍼미션 체크
+        // 퍼미션 체크
         if (!permissionState.status.isGranted) {
             dialogType = if (permissionState.status.shouldShowRationale) {
-                // TODO: 다시 재촉하는 다이얼로그
+                // 다시 재촉하는 다이얼로그
                 DialogType.PERMISSION_RATIONALE
             } else {
-                // TODO: 최초 다이얼로그
+                // 최초 다이얼로그
                 DialogType.PERMISSION_FIRST
             }
         }
 
-        // TODO: dataStore을 받아올 때 라이프사이클 고려해야 함 => LaunchedEffect로 하게 되면 LaunchedEffect가 코루틴이기 때문에 cancel작업을 따로 하지 않아도 됨
+        // dataStore을 받아올 때 라이프사이클 고려해야 함
+        // => LaunchedEffect로 하게 되면 LaunchedEffect가 코루틴이기 때문에 cancel작업을 따로 하지 않아도 됨
         if (viewModel.agreedService.value && viewModel.phoneAuthenticated.value) {
             // 홈 화면 이동
             kotlin.run { navigateToMain }
         } else {
+            // 랜딩 화면 이동
             kotlin.run { navigateToLanding }
         }
     }
