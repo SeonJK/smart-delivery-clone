@@ -9,6 +9,7 @@ import com.seonjk.smartdeliveryclone.data.repository.LandingRepository
 import com.seonjk.smartdeliveryclone.data.repository.LandingRepositoryImpl
 import com.seonjk.smartdeliveryclone.domain.usecase.landing.FetchInitialServiceAgreementUseCase
 import com.seonjk.smartdeliveryclone.domain.usecase.landing.GetPhoneAuthenticationUseCase
+import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetPhoneAuthenticationUseCase
 import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetPrivateInfoUseCase
 import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetServiceAgreementAllUseCase
 import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetServiceAgreementUseCase
@@ -25,7 +26,7 @@ val appModule = module {
     // ViewModel
     viewModel { SplashViewModel(get(), get()) }
     viewModel { ServiceAgreementViewModel(get(), get(), get()) }
-    viewModel { PhoneAuthenticationViewModel() }
+    viewModel { PhoneAuthenticationViewModel(get()) }
 
     // UseCase
         // Landing
@@ -34,6 +35,7 @@ val appModule = module {
         factory { SetServiceAgreementUseCase(get()) }
         factory { SetPrivateInfoUseCase(get()) }
         factory { GetPhoneAuthenticationUseCase(get()) }
+        factory { SetPhoneAuthenticationUseCase(get()) }
 
     // Repository
     single<LandingRepository> { LandingRepositoryImpl(dataStore = androidContext().dataStore) }
