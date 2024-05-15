@@ -29,11 +29,11 @@ class SplashViewModel(
     private var _phoneAuthenticated = MutableStateFlow(false)
     val phoneAuthenticated = _phoneAuthenticated.asStateFlow()
 
-    fun fetchAgreementAll(): Job = viewModelScope.launch(Dispatchers.IO) {
+    private fun fetchAgreementAll(): Job = viewModelScope.launch(Dispatchers.IO) {
         _agreedService.emit(fetchInitialServiceAgreementUseCase().serviceAgreementAll)
     }
 
-    fun fetchPhoneAuthenticated(): Job = viewModelScope.launch(Dispatchers.IO) {
+    private fun fetchPhoneAuthenticated(): Job = viewModelScope.launch(Dispatchers.IO) {
         getPhoneAuthenticationUseCase().collectLatest {
             _phoneAuthenticated.emit(it)
         }
