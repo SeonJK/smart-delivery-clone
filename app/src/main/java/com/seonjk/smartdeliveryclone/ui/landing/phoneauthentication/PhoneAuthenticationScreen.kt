@@ -19,10 +19,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +45,7 @@ import com.seonjk.smartdeliveryclone.ui.components.common.Header
 import com.seonjk.smartdeliveryclone.ui.components.common.SdcTextField
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -73,8 +76,34 @@ fun PhoneAuthenticationContents(
     viewModel: PhoneAuthenticationViewModel,
     navigateToMain: () -> Unit
 ) {
-    var timer by remember { mutableIntStateOf(30) }
+    val INITIAL_TIMER_VALUE = 30
+    var timer by rememberSaveable { mutableIntStateOf(INITIAL_TIMER_VALUE) }
+    LaunchedEffect(key1 = viewModel.sendMessageState) {
+        if (viewModel.sendMessageState is Response.Success<*> &&
+            (viewModel.sendMessageState as Response.Success<Boolean>).data == true
+        ) {
+            timer = INITIAL_TIMER_VALUE
+            while (timer > 0) {
+                delay(1000L)
+                timer--
+            }
+        }
+    }
+
     var isSendAuthEnable by remember { mutableStateOf(true) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    lifecycleOwner.lifecycleScope.launch {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.sendMessageState.collect { res ->
+                isSendAuthEnable = when (res) {
+                    Response.Unspecified -> true
+                    Response.Loading -> false
+                    is Response.Success<*> -> false
+                    is Response.Error<*> -> true
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -94,6 +123,7 @@ fun PhoneAuthenticationContents(
         ) {
 
             var phoneNum by remember { mutableStateOf("") }
+            val activity = LocalContext.current as Activity
 
             SdcTextField(
                 modifier = Modifier.weight(1.5f),
@@ -111,7 +141,7 @@ fun PhoneAuthenticationContents(
                 onClick = {
                     viewModel.sendAuthMessage(
                         phoneNum = phoneNum,
-                        activity = LocalContext.current as Activity
+                        activity = activity
                     )
                 },
                 shape = RectangleShape,
@@ -125,9 +155,9 @@ fun PhoneAuthenticationContents(
             ) {
                 Text(
                     text =
-                        if (Response.Success(true) == viewModel.sendMessageState)
-                            timer.toString()
-                        else stringResource(id = R.string.send_auth_number),
+                    if (timer > 0 && Response.Success(true) == viewModel.sendMessageState)
+                        timer.toString()
+                    else stringResource(id = R.string.send_auth_number),
                     maxLines = 1
                 )
             }
@@ -181,23 +211,6 @@ fun PhoneAuthenticationContents(
             color = SmartDeliveryCloneTheme.colors.descriptionColor
         )
     }
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-    lifecycleOwner.lifecycleScope.launch {
-        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.sendMessageState.collect { res ->
-                when (res) {
-                    Response.Unspecified -> isSendAuthEnable = true
-                    Response.Loading -> isSendAuthEnable = false
-                    is Response.Success<*> -> {
-                        isSendAuthEnable = false
-                        viewModel.countTimer.collectLatest { timer = it }
-                    }
-                    is Response.Error<*> -> true
-                }
-            }
-        }
-    }
 }
 
 @Preview
@@ -205,7 +218,7 @@ fun PhoneAuthenticationContents(
 fun PhoneAuthenticationPreview() {
     SmartDeliveryCloneTheme {
         PhoneAuthenticationScreen(
-            viewModel = PhoneAuthenticationViewModel(),
+            viewModel = koinViewModel<PhoneAuthenticationViewModel>(),
             navigateToMain = {}
         )
     }
