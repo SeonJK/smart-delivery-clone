@@ -19,6 +19,7 @@ import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetPhoneAuthenticati
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -37,6 +38,9 @@ class PhoneAuthenticationViewModel(
 
     private var _verificationState = MutableStateFlow<Response>(Response.Unspecified)
     val verificationState: Flow<Response> = _verificationState
+
+    private var _timerState = MutableStateFlow(30)
+    val timerState: Flow<Int> = _timerState.asStateFlow()
 
     fun sendAuthMessage(phoneNum: String, activity: Activity) {
         _sendMessageState.value = Response.Loading
@@ -77,6 +81,7 @@ class PhoneAuthenticationViewModel(
                 Log.e("PhoneAuthViewModel", "sendAuthMessage()::onCodeSent()")
                 _sendMessageState.value = Response.Success(data = true)
                 mVerificationId = verificationId
+                startTimer()
             }
 
             override fun onCodeAutoRetrievalTimeOut(verificationId: String) {
@@ -132,4 +137,14 @@ class PhoneAuthenticationViewModel(
                 }
         }
     }
+
+    private fun startTimer() {
+        viewModelScope.launch {
+            for (i in 30 downTo 0) {
+                _timerState.value = i
+                delay(1000L)
+            }
+        }
+    }
+
 }

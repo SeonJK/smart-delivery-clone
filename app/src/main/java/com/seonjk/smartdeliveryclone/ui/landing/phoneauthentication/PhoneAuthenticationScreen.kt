@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -76,40 +77,24 @@ fun PhoneAuthenticationContents(
     viewModel: PhoneAuthenticationViewModel,
     navigateToMain: () -> Unit
 ) {
+    val sendMessageState by viewModel.sendMessageState.collectAsState(Response.Unspecified)
+    val verificationState by viewModel.verificationState.collectAsState(Response.Unspecified)
+    val timerState by viewModel.timerState.collectAsState(30)
+
+
     val lifecycleOwner = LocalLifecycleOwner.current
-
-    var isSendAuthEnable by remember { mutableStateOf(true) }
-    lifecycleOwner.lifecycleScope.launch {
-        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.sendMessageState.collect { res ->
-                isSendAuthEnable = when (res) {
-                    Response.Unspecified -> true
-                    Response.Loading -> false
-                    is Response.Success<*> -> false
-                    is Response.Error<*> -> true
-                }
-            }
-        }
-    }
-
-    val INITIAL_TIMER_VALUE = 30
-    var timer by remember { mutableIntStateOf(0) }
-    LaunchedEffect(key1 = viewModel.sendMessageState) {
-        when (viewModel.sendMessageState) {
-            is Response.Success<*> -> {
-                isSendAuthEnable = false
-                if (res.data == true) {
-                    timer = INITIAL_TIMER_VALUE
-                    while (timer > 0) {
-                        delay(1000L)
-                        timer--
-                    }
-                }
-            }
-
-            else -> timer = 0
-        }
-    }
+//    lifecycleOwner.lifecycleScope.launch {
+//        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//            viewModel.sendMessageState.collect { res ->
+//                isSendAuthEnable = when (res) {
+//                    Response.Unspecified -> true
+//                    Response.Loading -> false
+//                    is Response.Success<*> -> false
+//                    is Response.Error<*> -> true
+//                }
+//            }
+//        }
+//    }
 
     Column(
         modifier = Modifier
@@ -129,7 +114,18 @@ fun PhoneAuthenticationContents(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Bottom
         ) {
-
+            var isSendAuthEnable by remember { mutableStateOf(true) }
+            var timer by remember { mutableIntStateOf(30) }
+            when (sendMessageState) {
+                Response.Unspecified -> isSendAuthEnable = true
+                Response.Loading -> isSendAuthEnable = false
+                is Response.Error<*> -> isSendAuthEnable = true
+                is Response.Success<*> -> {
+                    isSendAuthEnable = false
+                    timer = timerState
+                }
+            }
+            
             var phoneNum by remember { mutableStateOf("") }
 
             SdcTextField(
@@ -142,6 +138,7 @@ fun PhoneAuthenticationContents(
             }
 
             Spacer(modifier = Modifier.width(20.dp))
+
 
             Button(
                 modifier = Modifier.weight(1.0f),
@@ -171,23 +168,24 @@ fun PhoneAuthenticationContents(
         ) {
 
             var authNum by remember { mutableStateOf("") }
-            lifecycleOwner.lifecycleScope.launch {
-                lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.verificationState.collect { res ->
-                        when (res) {
-                            Response.Unspecified -> Unit
-                            Response.Loading -> Unit
-                            is Response.Success<*> -> {
-                                if (res.data == true)
-                                    navigateToMain()
-                            }
+//            lifecycleOwner.lifecycleScope.launch {
+//                lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                    viewModel.verificationState.collect { res ->
+//
+//                    }
+//                }
+//            }
+            when (verificationState) {
+                Response.Unspecified -> Unit
+                Response.Loading -> Unit
+                is Response.Success<*> -> {
+                    if ((verificationState as Response.Success<*>).data == true)
+                        navigateToMain()
+                }
 
-                            is Response.Error<*> -> {
-                                authNum = ""
-                                Toast.makeText(context, "인증번호가 일치하지 않습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
-                            }
-                        }
-                    }
+                is Response.Error<*> -> {
+                    authNum = ""
+                    Toast.makeText(context, "인증번호가 일치하지 않습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -206,7 +204,6 @@ fun PhoneAuthenticationContents(
                 modifier = Modifier.weight(1.0f),
                 onClick = {
                     runBlocking {
-                        // TODO: 인증번호 일치 확인
                         viewModel.verifyAuthCode(authNum)
                     }
                 },
