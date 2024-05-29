@@ -14,7 +14,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun RootNavHost(
     navController: NavHostController,
-    goAlarmSetting: () -> Unit
+    appFinish: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -39,7 +39,7 @@ fun RootNavHost(
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 },
-                goAlarmSetting = goAlarmSetting
+                appFinish = appFinish
             )
         }
         landingNavGraph(navController)

@@ -2,6 +2,7 @@ package com.seonjk.smartdeliveryclone.ui.landing.phoneauthentication
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,9 +44,9 @@ import com.seonjk.smartdeliveryclone.data.Response
 import com.seonjk.smartdeliveryclone.ui.components.common.Header
 import com.seonjk.smartdeliveryclone.ui.components.common.SdcTextField
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,22 +76,9 @@ fun PhoneAuthenticationContents(
     viewModel: PhoneAuthenticationViewModel,
     navigateToMain: () -> Unit
 ) {
-    val INITIAL_TIMER_VALUE = 30
-    var timer by rememberSaveable { mutableIntStateOf(INITIAL_TIMER_VALUE) }
-    LaunchedEffect(key1 = viewModel.sendMessageState) {
-        if (viewModel.sendMessageState is Response.Success<*> &&
-            (viewModel.sendMessageState as Response.Success<Boolean>).data == true
-        ) {
-            timer = INITIAL_TIMER_VALUE
-            while (timer > 0) {
-                delay(1000L)
-                timer--
-            }
-        }
-    }
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     var isSendAuthEnable by remember { mutableStateOf(true) }
-    val lifecycleOwner = LocalLifecycleOwner.current
     lifecycleOwner.lifecycleScope.launch {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.sendMessageState.collect { res ->
@@ -105,6 +92,25 @@ fun PhoneAuthenticationContents(
         }
     }
 
+    val INITIAL_TIMER_VALUE = 30
+    var timer by remember { mutableIntStateOf(0) }
+    LaunchedEffect(key1 = viewModel.sendMessageState) {
+        when (viewModel.sendMessageState) {
+            is Response.Success<*> -> {
+                isSendAuthEnable = false
+                if (res.data == true) {
+                    timer = INITIAL_TIMER_VALUE
+                    while (timer > 0) {
+                        delay(1000L)
+                        timer--
+                    }
+                }
+            }
+
+            else -> timer = 0
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -115,6 +121,8 @@ fun PhoneAuthenticationContents(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
+        val context = LocalContext.current
+
         Spacer(modifier = Modifier.height(30.dp))
 
         Row(
@@ -123,7 +131,6 @@ fun PhoneAuthenticationContents(
         ) {
 
             var phoneNum by remember { mutableStateOf("") }
-            val activity = LocalContext.current as Activity
 
             SdcTextField(
                 modifier = Modifier.weight(1.5f),
@@ -138,12 +145,7 @@ fun PhoneAuthenticationContents(
 
             Button(
                 modifier = Modifier.weight(1.0f),
-                onClick = {
-                    viewModel.sendAuthMessage(
-                        phoneNum = phoneNum,
-                        activity = activity
-                    )
-                },
+                onClick = { viewModel.sendAuthMessage(phoneNum, context as Activity) },
                 shape = RectangleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = SmartDeliveryCloneTheme.colors.primary,
@@ -154,9 +156,7 @@ fun PhoneAuthenticationContents(
                 enabled = phoneNum != "" && isSendAuthEnable
             ) {
                 Text(
-                    text =
-                    if (timer > 0 && Response.Success(true) == viewModel.sendMessageState)
-                        timer.toString()
+                    text = if (timer > 0) timer.toString()
                     else stringResource(id = R.string.send_auth_number),
                     maxLines = 1
                 )
@@ -171,6 +171,25 @@ fun PhoneAuthenticationContents(
         ) {
 
             var authNum by remember { mutableStateOf("") }
+            lifecycleOwner.lifecycleScope.launch {
+                lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.verificationState.collect { res ->
+                        when (res) {
+                            Response.Unspecified -> Unit
+                            Response.Loading -> Unit
+                            is Response.Success<*> -> {
+                                if (res.data == true)
+                                    navigateToMain()
+                            }
+
+                            is Response.Error<*> -> {
+                                authNum = ""
+                                Toast.makeText(context, "인증번호가 일치하지 않습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }
+            }
 
             SdcTextField(
                 modifier = Modifier.weight(1.5f),
@@ -186,8 +205,10 @@ fun PhoneAuthenticationContents(
             Button(
                 modifier = Modifier.weight(1.0f),
                 onClick = {
-                    // TODO: 인증번호 일치 확인
-                    navigateToMain()
+                    runBlocking {
+                        // TODO: 인증번호 일치 확인
+                        viewModel.verifyAuthCode(authNum)
+                    }
                 },
                 shape = RectangleShape,
                 colors = ButtonDefaults.buttonColors(
@@ -196,7 +217,7 @@ fun PhoneAuthenticationContents(
                     contentColor = SmartDeliveryCloneTheme.colors.titleColor,
                     disabledContentColor = SmartDeliveryCloneTheme.colors.titleColor
                 ),
-                enabled = authNum != "" /*&& TODO: 인증번호 전송 완료됨 플래그*/
+                enabled = authNum != ""
             ) {
                 Text(text = stringResource(id = R.string.confirm))
             }

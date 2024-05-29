@@ -16,6 +16,7 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.auth
 import com.seonjk.smartdeliveryclone.data.Response
 import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetPhoneAuthenticationUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -24,8 +25,12 @@ import java.util.concurrent.TimeUnit
 class PhoneAuthenticationViewModel(
     private val setPhoneAuthenticationUseCase: SetPhoneAuthenticationUseCase
 ) : ViewModel() {
+    companion object {
+        private const val KOREAN_CODE = "+82"
+    }
 
     private val auth: FirebaseAuth = Firebase.auth
+    private var mVerificationId: String = ""
 
     private var _sendMessageState = MutableStateFlow<Response>(Response.Unspecified)
     val sendMessageState: Flow<Response> = _sendMessageState
@@ -38,14 +43,18 @@ class PhoneAuthenticationViewModel(
 
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                Log.e("PhoneAuthViewModel", "sendAuthMessage()::onVerificationCompleted()")
-                viewModelScope.launch {
-                    verifyAuthCode(credential)
-                }
+                Log.e(
+                    "PhoneAuthViewModel",
+                    "sendAuthMessage()::onVerificationCompleted() : code=${credential.zzb()} + phoneNum=${credential.zzc()}"
+                )
+                verifyAuthCode(credential)
             }
 
             override fun onVerificationFailed(e: FirebaseException) {
-                Log.e("PhoneAuthViewModel", "sendAuthMessage()::onVerificationFailed() : ${e.message}")
+                Log.e(
+                    "PhoneAuthViewModel",
+                    "sendAuthMessage()::onVerificationFailed() : ${e.message}"
+                )
 
                 if (e is FirebaseAuthInvalidCredentialsException) {
                     // Invalid request
@@ -61,21 +70,26 @@ class PhoneAuthenticationViewModel(
                 )
             }
 
-            override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+            override fun onCodeSent(
+                verificationId: String,
+                token: PhoneAuthProvider.ForceResendingToken
+            ) {
                 Log.e("PhoneAuthViewModel", "sendAuthMessage()::onCodeSent()")
                 _sendMessageState.value = Response.Success(data = true)
+                mVerificationId = verificationId
             }
 
             override fun onCodeAutoRetrievalTimeOut(verificationId: String) {
                 Log.e("PhoneAuthViewModel", "sendAuthMessage()::onCodeAutoRetrievalTimeOut()")
                 _sendMessageState.value = Response.Unspecified
+                mVerificationId = ""
             }
         }
 
         auth.useAppLanguage()
 
         val options = PhoneAuthOptions.newBuilder(auth)
-            .setPhoneNumber(phoneNum)
+            .setPhoneNumber(KOREAN_CODE + phoneNum)
             .setTimeout(30L, TimeUnit.SECONDS)
             .setActivity(activity)
             .setCallbacks(callbacks)
@@ -83,22 +97,39 @@ class PhoneAuthenticationViewModel(
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
-    fun verifyAuthCode(credential: PhoneAuthCredential) {
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.e("PhoneAuthViewModel", "verifyAuthCode()::signInWithCredential() : success")
-                    viewModelScope.launch {
-                        setPhoneAuthenticationUseCase(true)
-                        _verificationState.value = Response.Success(data = true)
+    fun verifyAuthCode(authNum: String) {
+        val credential = PhoneAuthProvider.getCredential(mVerificationId, authNum)
+        verifyAuthCode(credential)
+    }
+
+    private fun verifyAuthCode(credential: PhoneAuthCredential) {
+        _verificationState.value = Response.Loading
+
+        viewModelScope.launch {
+            auth.signInWithCredential(credential)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.e(
+                            "PhoneAuthViewModel",
+                            "verifyAuthCode()::signInWithCredential() : success"
+                        )
+                        viewModelScope.launch {
+                            setPhoneAuthenticationUseCase(true)
+                            _verificationState.value = Response.Success(data = true)
+                        }
+                    } else {
+                        Log.e(
+                            "PhoneAuthViewModel",
+                            "verifyAuthCode()::signInWithCredential() : exception=${task.exception}"
+                        )
+                        _verificationState.value = Response.Error(
+                            data = null,
+                            message = task.exception?.message ?: "empty message"
+                        )
+                        _sendMessageState.value = Response.Unspecified
+                        _verificationState.value = Response.Unspecified
                     }
-                } else {
-                    Log.e("PhoneAuthViewModel", "verifyAuthCode()::signInWithCredential() : failed ${task.exception}")
-                    _verificationState.value = Response.Error(
-                        data = null,
-                        message = task.exception?.message ?: "empty message"
-                    )
                 }
-            }
+        }
     }
 }

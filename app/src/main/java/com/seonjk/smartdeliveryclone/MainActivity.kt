@@ -1,12 +1,6 @@
 package com.seonjk.smartdeliveryclone
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,19 +30,12 @@ class MainActivity : ComponentActivity() {
                     navController = rememberNavController()
                     RootNavHost(
                         navController = navController,
-                        goAlarmSetting = {
-                            Intent(
-                                Settings.ACTION_APP_NOTIFICATION_SETTINGS,
-                                Uri.parse("package:$packageName")
-                            ).apply {
-                                addCategory(Intent.CATEGORY_DEFAULT)
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                startActivity(this)
-                            }
-                        }
+                        appFinish = { finish() }
                     )
                 }
             }
         }
     }
+
+
 }
