@@ -6,7 +6,8 @@ import com.seonjk.smartdeliveryclone.local.db.dataStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
+val repositoryModule = module {
 
-val appModule = module {
-    includes(viewModelModule, useCaseModule, repositoryModule)
+    single<LandingRepository> { LandingRepositoryImpl(dataStore = androidContext().dataStore) }
+
 }
