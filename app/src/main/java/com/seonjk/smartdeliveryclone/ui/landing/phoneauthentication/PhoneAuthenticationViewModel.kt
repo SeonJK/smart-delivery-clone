@@ -14,7 +14,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.auth
-import com.seonjk.smartdeliveryclone.data.Response
+import com.seonjk.smartdeliveryclone.data.model.Response
 import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetPhoneAuthenticationUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
