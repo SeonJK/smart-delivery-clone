@@ -31,11 +31,11 @@
     </string>
 
     <!--  MainGroup Navigation  -->
-    <string name="nav_dashboard">1</string>
-    <string name="nav_list_delivery">2</string>
-    <string name="nav_diary">3</string>
-    <string name="nav_reservation">4</string>
-    <string name="nav_e_money">5</string>
+    <string name="nav_dashboard">대시보드</string>
+    <string name="nav_list_delivery">배송목록</string>
+    <string name="nav_diary">다이어리</string>
+    <string name="nav_reservation">택배예약</string>
+    <string name="nav_e_money">e머니</string>
 
     <!--  대시보드  -->
 

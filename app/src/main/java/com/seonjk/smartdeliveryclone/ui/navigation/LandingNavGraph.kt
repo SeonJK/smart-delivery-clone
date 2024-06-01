@@ -18,9 +18,7 @@ fun NavGraphBuilder.landingNavGraph(
         startDestination = Screen.Landing.ServiceAgreement.route
     ) {
         composable(route = Screen.Landing.ServiceAgreement.route) {
-            val viewModel = koinViewModel<ServiceAgreementViewModel>()
             ServiceAgreementScreen(
-                viewModel = viewModel,
                 navigateToPhoneAuthentication = {
                     navController.navigate(Screen.Landing.PhoneAuthentication.route) {
                         popUpTo(Screen.Landing.route) { inclusive = true }
@@ -29,9 +27,7 @@ fun NavGraphBuilder.landingNavGraph(
             )
         }
         composable(route = Screen.Landing.PhoneAuthentication.route) {
-            val viewModel = koinViewModel<PhoneAuthenticationViewModel>()
             PhoneAuthenticationScreen(
-                viewModel = viewModel,
                 navigateToMain = {
                     navController.navigate(Screen.Main.route) {
                         popUpTo(Screen.Landing.route) { inclusive = true }
