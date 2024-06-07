@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +20,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,16 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seonjk.smartdeliveryclone.R
-import com.seonjk.smartdeliveryclone.data.repository.LandingRepository
-import com.seonjk.smartdeliveryclone.data.repository.LandingRepositoryImpl
-import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetServiceAgreementAllUseCase
-import com.seonjk.smartdeliveryclone.ui.components.common.Header
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,29 +41,6 @@ fun ServiceAgreementScreen(
     viewModel: ServiceAgreementViewModel = koinViewModel(),
     navigateToPhoneAuthentication: () -> Unit
 ) {
-    Scaffold(
-        containerColor = SmartDeliveryCloneTheme.colors.background,
-        topBar = {
-            Header(
-                title = stringResource(R.string.service_agreement)
-            )
-        },
-    ) {
-        ServiceAgreementContents(
-            padding = it,
-            viewModel = viewModel,
-            navigateToPhoneAuthentication = navigateToPhoneAuthentication
-        )
-    }
-}
-
-@Composable
-fun ServiceAgreementContents(
-    padding: PaddingValues,
-    viewModel: ServiceAgreementViewModel,
-    navigateToPhoneAuthentication: () -> Unit
-) {
-
     var serviceAgreementAll by remember { mutableStateOf(viewModel.serviceAgreementAll.value) }
     var serviceAgreement by remember { mutableStateOf(viewModel.serviceAgreement.value) }
     var privateInfo by remember { mutableStateOf(viewModel.privateInfo.value) }
@@ -83,7 +50,6 @@ fun ServiceAgreementContents(
             .fillMaxWidth()
             .wrapContentHeight()
             .background(SmartDeliveryCloneTheme.colors.background)
-            .padding(paddingValues = padding)
             .padding(16.dp, 0.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
@@ -111,7 +77,7 @@ fun ServiceAgreementContents(
                 imageVector = Icons.Rounded.CheckCircle,
                 contentDescription = stringResource(R.string.agree_all),
                 tint = if (serviceAgreementAll) SmartDeliveryCloneTheme.colors.primary
-                        else SmartDeliveryCloneTheme.colors.descriptionColor
+                else SmartDeliveryCloneTheme.colors.descriptionColor
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
@@ -156,7 +122,7 @@ fun ServiceAgreementContents(
                 imageVector = Icons.Rounded.CheckCircle,
                 contentDescription = stringResource(R.string.service_agree),
                 tint = if (serviceAgreement) SmartDeliveryCloneTheme.colors.primary
-                        else SmartDeliveryCloneTheme.colors.descriptionColor
+                else SmartDeliveryCloneTheme.colors.descriptionColor
             )
             Spacer(modifier = Modifier.width(16.dp))
             Row(modifier = Modifier.weight(2f)) {
@@ -200,7 +166,7 @@ fun ServiceAgreementContents(
                 imageVector = Icons.Rounded.CheckCircle,
                 contentDescription = stringResource(R.string.private_info_agree),
                 tint = if (privateInfo) SmartDeliveryCloneTheme.colors.primary
-                        else SmartDeliveryCloneTheme.colors.descriptionColor
+                else SmartDeliveryCloneTheme.colors.descriptionColor
             )
             Spacer(modifier = Modifier.width(16.dp))
             Row(modifier = Modifier.weight(2f)) {
