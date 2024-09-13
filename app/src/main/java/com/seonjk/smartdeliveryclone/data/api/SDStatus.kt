@@ -1,4 +1,4 @@
-package com.seonjk.smartdeliveryclone.data.SmartDeliveryAPI
+package com.seonjk.smartdeliveryclone.data.api
 
 data class SDStatus(
     val code: String,
