@@ -12,9 +12,6 @@ import kotlinx.coroutines.flow.Flow
 interface TrackingItemDao {
 
     @Query("SELECT * FROM TrackingItem")
-    fun allTrackingItem(): Flow<List<TrackingItem>>
-
-    @Query("SELECT * FROM TrackingItem")
     suspend fun getAll(): List<TrackingItem>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

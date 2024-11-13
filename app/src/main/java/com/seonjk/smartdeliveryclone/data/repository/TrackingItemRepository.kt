@@ -1,12 +1,10 @@
 package com.seonjk.smartdeliveryclone.data.repository
 
 import com.seonjk.smartdeliveryclone.data.entity.TrackingItem
-import com.seonjk.smartdeliveryclone.data.entity.TrackingInfo
+import com.seonjk.smartdeliveryclone.data.api.TrackingInfo
 import kotlinx.coroutines.flow.Flow
 
 interface TrackingItemRepository {
-
-    val trackingItems: Flow<List<TrackingItem>>
 
     suspend fun getTrackingItemInfo(): List<Pair<TrackingItem, TrackingInfo>>
 

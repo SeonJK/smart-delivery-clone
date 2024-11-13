@@ -6,7 +6,7 @@ import com.seonjk.smartdeliveryclone.data.repository.ShippingCompanyRepository
 import com.seonjk.smartdeliveryclone.data.repository.ShippingCompanyRepositoryImpl
 import com.seonjk.smartdeliveryclone.data.repository.TrackingItemRepository
 import com.seonjk.smartdeliveryclone.data.repository.TrackingItemRepositoryImpl
-import com.seonjk.smartdeliveryclone.local.db.dataStore
+import com.seonjk.smartdeliveryclone.data.db.dataStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

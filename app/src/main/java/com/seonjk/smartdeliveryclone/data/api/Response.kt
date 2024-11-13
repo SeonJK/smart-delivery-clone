@@ -1,4 +1,4 @@
-package com.seonjk.smartdeliveryclone.data.model
+package com.seonjk.smartdeliveryclone.data.api
 
 sealed class Response() {
     object Unspecified: Response()

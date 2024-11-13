@@ -2,7 +2,7 @@ package com.seonjk.smartdeliveryclone.network
 
 import com.seonjk.smartdeliveryclone.BuildConfig
 import com.seonjk.smartdeliveryclone.data.entity.ShippingCompanies
-import com.seonjk.smartdeliveryclone.data.entity.TrackingInfo
+import com.seonjk.smartdeliveryclone.data.api.TrackingInfo
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

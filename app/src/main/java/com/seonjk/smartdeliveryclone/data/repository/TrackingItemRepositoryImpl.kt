@@ -1,7 +1,7 @@
 package com.seonjk.smartdeliveryclone.data.repository
 
 import com.seonjk.smartdeliveryclone.data.db.TrackingItemDao
-import com.seonjk.smartdeliveryclone.data.entity.TrackingInfo
+import com.seonjk.smartdeliveryclone.data.api.TrackingInfo
 import com.seonjk.smartdeliveryclone.data.entity.TrackingItem
 import com.seonjk.smartdeliveryclone.network.ApiService
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,10 +14,6 @@ class TrackingItemRepositoryImpl(
     private val trackingItemDao: TrackingItemDao,
     private val dispatcher: CoroutineDispatcher
 ) : TrackingItemRepository {
-    override val trackingItems: Flow<List<TrackingItem>>
-        = trackingItemDao.allTrackingItem()
-        .distinctUntilChanged()
-        .flowOn(dispatcher)
 
     override suspend fun getTrackingItemInfo(): List<Pair<TrackingItem, TrackingInfo>> {
         return trackingItemDao.getAll()

@@ -1,4 +1,4 @@
-package com.seonjk.smartdeliveryclone.local.db
+package com.seonjk.smartdeliveryclone.data.db
 
 import android.content.Context
 import androidx.datastore.core.DataStore

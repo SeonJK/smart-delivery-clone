@@ -1,4 +1,4 @@
-package com.seonjk.smartdeliveryclone.data.entity
+package com.seonjk.smartdeliveryclone.data.api
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -48,7 +48,6 @@ data class TrackingInfo(
     val trackingDetails: List<TrackingDetail>? = null,
     @SerializedName("zipCode")
     val zipCode: String? = null,
-
     @SerializedName("msg")
     val errorMessage: String? = null
 
