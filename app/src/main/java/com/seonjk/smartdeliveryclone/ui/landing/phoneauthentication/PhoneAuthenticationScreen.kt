@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,13 +34,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.seonjk.smartdeliveryclone.R
-import com.seonjk.smartdeliveryclone.data.model.Response
+import com.seonjk.smartdeliveryclone.data.api.Response
+import com.seonjk.smartdeliveryclone.data.repository.LandingRepositoryImpl
+import com.seonjk.smartdeliveryclone.domain.usecase.landing.SetPhoneAuthenticationUseCase
+import com.seonjk.smartdeliveryclone.ui.components.common.Header
 import com.seonjk.smartdeliveryclone.ui.components.common.SdcTextField
+import com.seonjk.smartdeliveryclone.ui.navigation.Screen
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhoneAuthenticationScreen(
     viewModel: PhoneAuthenticationViewModel = koinViewModel(),
@@ -51,14 +55,15 @@ fun PhoneAuthenticationScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
+            .fillMaxSize()
             .background(SmartDeliveryCloneTheme.colors.background)
-            .padding(16.dp, 0.dp),
+            .padding(horizontal = 16.dp, vertical = 0.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
         val context = LocalContext.current
+
+        Header(title = Screen.Landing.PhoneAuthentication.title!!)
 
         Spacer(modifier = Modifier.height(30.dp))
 

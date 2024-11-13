@@ -5,10 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.seonjk.smartdeliveryclone.ui.landing.phoneauthentication.PhoneAuthenticationScreen
-import com.seonjk.smartdeliveryclone.ui.landing.phoneauthentication.PhoneAuthenticationViewModel
 import com.seonjk.smartdeliveryclone.ui.landing.serviceagreement.ServiceAgreementScreen
-import com.seonjk.smartdeliveryclone.ui.landing.serviceagreement.ServiceAgreementViewModel
-import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.landingNavGraph(
     navController: NavController

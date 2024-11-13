@@ -6,13 +6,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.seonjk.smartdeliveryclone.ui.main.DashBoardScreen
 import com.seonjk.smartdeliveryclone.ui.main.DeliveryListScreen
-import com.seonjk.smartdeliveryclone.ui.main.DeliveryListViewModel
 import com.seonjk.smartdeliveryclone.ui.main.DiaryScreen
-import com.seonjk.smartdeliveryclone.ui.main.DiaryViewModel
 import com.seonjk.smartdeliveryclone.ui.main.EmoneyScreen
 import com.seonjk.smartdeliveryclone.ui.main.ReservationScreen
 import com.seonjk.smartdeliveryclone.ui.navigation.Screen
-import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
@@ -23,6 +20,9 @@ fun NavGraphBuilder.mainNavGraph(
     ) {
         composable(route = Screen.Main.DashBoard.route) {
             DashBoardScreen(
+                navigateToNoti = {},
+                showAddItemDialog = {},
+                navigateToSetting = {},
                 navigateToDeliveryList = { navController.navigate(Screen.Main.DeliveryList.route) },
                 navigateToDiary = { navController.navigate(Screen.Main.Diary.route) },
                 navigateToEmoney = { navController.navigate(Screen.Main.EMoney.route) },
@@ -31,7 +31,11 @@ fun NavGraphBuilder.mainNavGraph(
         }
 
         composable(route = Screen.Main.DeliveryList.route) {
-            DeliveryListScreen()
+            DeliveryListScreen(
+                showReadAllDialog = {},
+                showAddItemDialog = {},
+                navigateToSearch = {}
+            )
         }
 
         composable(route = Screen.Main.Diary.route) {

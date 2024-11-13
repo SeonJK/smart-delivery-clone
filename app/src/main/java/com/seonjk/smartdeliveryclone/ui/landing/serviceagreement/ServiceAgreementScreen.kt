@@ -17,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,10 +31,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.seonjk.smartdeliveryclone.R
+import com.seonjk.smartdeliveryclone.ui.components.common.Header
+import com.seonjk.smartdeliveryclone.ui.navigation.Screen
 import com.seonjk.smartdeliveryclone.ui.theme.SmartDeliveryCloneTheme
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiceAgreementScreen(
     viewModel: ServiceAgreementViewModel = koinViewModel(),
@@ -54,6 +54,8 @@ fun ServiceAgreementScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
+        Header(title = Screen.Landing.ServiceAgreement.title!!)
+
         Spacer(modifier = Modifier.height(30.dp))
         Row(
             modifier = Modifier

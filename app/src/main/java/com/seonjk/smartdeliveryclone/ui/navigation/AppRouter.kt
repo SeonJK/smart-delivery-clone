@@ -35,7 +35,7 @@ sealed class Screen(val route: String) {
     object Splash : Screen(Route.SPLASH)
 
     // LANDING Group
-    object Landing : Destination(Route.LANDING) {
+    object Landing : Screen(Route.LANDING) {
         // 이용약관
         object ServiceAgreement : Destination(
             route = Route.SERVICE_AGREEMENT,
@@ -50,7 +50,7 @@ sealed class Screen(val route: String) {
     }
 
     // MAIN Group
-    object Main : Destination(Route.MAIN) {
+    object Main : Screen(Route.MAIN) {
         // 대시보드
         object DashBoard : Destination(
             route = Route.DASHBOARD,
@@ -92,5 +92,5 @@ sealed class Destination(
     val route: String,
     val title: Int? = null,
     val icon: ImageVector? = null,
-    val navArgument: List<NamedNavArgument> = emptyList()
+    val navArgument: MutableList<NamedNavArgument> = mutableListOf()
 )

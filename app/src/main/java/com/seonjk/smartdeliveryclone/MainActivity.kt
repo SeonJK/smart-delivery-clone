@@ -38,54 +38,46 @@ class MainActivity : ComponentActivity() {
             SmartDeliveryCloneTheme {
                 navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val topBarState = rememberSaveable{ mutableStateOf(true) }
                 val bottomBarState = rememberSaveable{ mutableStateOf(true) }
                 val resId = rememberSaveable{ mutableIntStateOf(-1) }
+
                 when (navBackStackEntry?.destination?.route) {
                     Screen.Main.DashBoard.route -> {
-                        topBarState.value = true
                         bottomBarState.value = true
                         resId.intValue = Screen.Main.DashBoard.title!!
                     }
                     Screen.Main.DeliveryList.route -> {
-                        topBarState.value = true
                         bottomBarState.value = true
                         resId.intValue = Screen.Main.DeliveryList.title!!
                     }
                     Screen.Main.Diary.route -> {
-                        topBarState.value = true
                         bottomBarState.value = true
                         resId.intValue = Screen.Main.Diary.title!!
                     }
                     Screen.Main.Reservation.route -> {
-                        topBarState.value = true
                         bottomBarState.value = true
                         resId.intValue = Screen.Main.Reservation.title!!
                     }
                     Screen.Main.EMoney.route -> {
-                        topBarState.value = true
                         bottomBarState.value = true
                         resId.intValue = Screen.Main.EMoney.title!!
                     }
                     Screen.Landing.ServiceAgreement.route -> {
-                        topBarState.value = true
                         bottomBarState.value = false
                         resId.intValue = Screen.Landing.ServiceAgreement.title!!
                     }
                     Screen.Landing.PhoneAuthentication.route -> {
-                        topBarState.value = true
                         bottomBarState.value = false
                         resId.intValue = Screen.Landing.PhoneAuthentication.title!!
                     }
                     else -> {
-                        topBarState.value = false
                         bottomBarState.value = false
                     }
                 }
+
                 Scaffold (
                     modifier = Modifier.fillMaxSize(),
                     containerColor = SmartDeliveryCloneTheme.colors.background,
-                    topBar = { if (topBarState.value) Header(stringResource(resId.intValue)) },
                     bottomBar = { if (bottomBarState.value) MainBottomBar(navController) }
                 ) { paddingValues ->
                     Box(modifier = Modifier.padding(paddingValues)) {
